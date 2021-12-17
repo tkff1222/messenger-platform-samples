@@ -18,6 +18,9 @@ const
   https = require('https'),  
   request = require('request');
 
+const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
+const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
+
 var app = express();
 app.set('port', process.env.PORT || 5000);
 app.set('view engine', 'ejs');
@@ -90,6 +93,15 @@ app.post('/webhook', function (req, res) {
     data.entry.forEach(function(pageEntry) {
       var pageID = pageEntry.id;
       var timeOfEvent = pageEntry.time;
+
+      // Get the webhook event. entry.messaging is an array, but 
+      // will only ever contain one event, so we get index 0
+      let webhook_event = pageEntry.messaging[0];
+      console.log(webhook_event);
+
+      // Get the sender PSID
+      let sender_psid = webhook_event.sender.id;
+      console.log('Sender PSID: ' + sender_psid);
 
       // Iterate over each messaging event
       pageEntry.messaging.forEach(function(messagingEvent) {
@@ -826,6 +838,22 @@ function callSendAPI(messageData) {
     }
   });  
 }
+
+// Handles messages events
+function handleMessage(sender_psid, received_message) {
+
+}
+
+// Handles messaging_postbacks events
+function handlePostback(sender_psid, received_postback) {
+
+}
+
+// Sends response messages via the Send API
+function callSendAPI(sender_psid, response) {
+  
+}
+
 
 // Start server
 // Webhooks must be available via SSL with a certificate signed by a valid 
